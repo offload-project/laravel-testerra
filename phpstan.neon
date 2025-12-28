@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+    level: 7
+    tmpDir: /tmp/phpstan
+    ignoreErrors:
+        # WaitlistIntegration uses an optional package that may not be installed
+        - message: '#Call to static method .+ on an unknown class OffloadProject\\Waitlist\\Facades\\Waitlist#'
+          path: src/Support/WaitlistIntegration.php
+        # Traits are analyzed when used by the consumer application
+        - identifier: trait.unused
