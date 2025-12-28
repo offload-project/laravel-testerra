@@ -1,3 +1,9 @@
+<p align="center">
+    <a href="https://packagist.org/packages/offload-project/laravel-testerra"><img src="https://img.shields.io/packagist/v/offload-project/laravel-testerra.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+    <a href="https://github.com/offload-project/laravel-testerra/actions"><img src="https://img.shields.io/github/actions/workflow/status/offload-project/laravel-testerra/tests.yml?branch=main&style=flat-square" alt="GitHub Tests Action Status"></a>
+    <a href="https://packagist.org/packages/offload-project/laravel-testerra"><img src="https://img.shields.io/packagist/dt/offload-project/laravel-testerra.svg?style=flat-square" alt="Total Downloads"></a>
+</p>
+
 # Laravel Testerra
 
 A Laravel package for managing beta testing programs with test assignments, bug reporting, and tester invitations.
@@ -5,10 +11,12 @@ A Laravel package for managing beta testing programs with test assignments, bug 
 ## Features
 
 - **Test Management**: Create and organize tests into groups
-- **Tester Invitations**: Invite testers via email with token-based secure links (powered by [laravel-invite-only](https://github.com/offload-project/laravel-invite-only))
+- **Tester Invitations**: Invite testers via email with token-based secure links (powered
+  by [laravel-invite-only](https://github.com/offload-project/laravel-invite-only))
 - **Test Assignments**: Assign tests to users individually or by group
 - **Bug Reporting**: Track bugs with severity levels and screenshot attachments
-- **Waitlist Integration**: Optional integration with [laravel-waitlist](https://github.com/offload-project/laravel-waitlist)
+- **Waitlist Integration**: Optional integration
+  with [laravel-waitlist](https://github.com/offload-project/laravel-waitlist)
 - **Event-Driven**: Events fired for key actions (invitations, assignments, completions, bug reports)
 
 ## Requirements
@@ -205,7 +213,8 @@ The package dispatches the following events:
 
 ## Waitlist Integration
 
-To use the waitlist integration, install the [laravel-waitlist](https://github.com/offload-project/laravel-waitlist) package and enable it in your config:
+To use the waitlist integration, install the [laravel-waitlist](https://github.com/offload-project/laravel-waitlist)
+package and enable it in your config:
 
 ```php
 'waitlist' => [
