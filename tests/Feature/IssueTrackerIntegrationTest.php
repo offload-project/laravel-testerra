@@ -174,3 +174,68 @@ it('maps bug severity to jira priority', function () {
         return $request['fields']['priority']['name'] === 'Highest';
     });
 });
+
+it('creates github issue when github driver is configured', function () {
+    Http::fake([
+        'https://api.github.com/*' => Http::response([
+            'id' => 98765,
+            'number' => 42,
+            'html_url' => 'https://github.com/owner/repo/issues/42',
+        ], 201),
+    ]);
+
+    config()->set('testerra.issue_tracker.enabled', true);
+    config()->set('testerra.issue_tracker.default', 'github');
+    config()->set('testerra.issue_tracker.providers.github', [
+        'token' => 'ghp_test_token',
+        'owner' => 'owner',
+        'repo' => 'repo',
+        'labels' => ['bug'],
+    ]);
+
+    $user = User::factory()->create();
+    $test = Testerra::createTest('Test', 'Instructions');
+    $assignment = Testerra::assignTest($user, $test);
+
+    $bug = Testerra::reportBug($assignment, 'GitHub bug', 'Description', 'high');
+
+    expect($bug->fresh())
+        ->external_id->toBe('98765')
+        ->external_key->toBe('42')
+        ->integration_type->toBe('github')
+        ->external_url->toBe('https://github.com/owner/repo/issues/42');
+});
+
+it('applies severity labels to github issues', function () {
+    Http::fake([
+        'https://api.github.com/*' => Http::response([
+            'id' => 98765,
+            'number' => 42,
+            'html_url' => 'https://github.com/owner/repo/issues/42',
+        ], 201),
+    ]);
+
+    config()->set('testerra.issue_tracker.enabled', true);
+    config()->set('testerra.issue_tracker.default', 'github');
+    config()->set('testerra.issue_tracker.providers.github', [
+        'token' => 'ghp_test_token',
+        'owner' => 'owner',
+        'repo' => 'repo',
+        'labels' => ['bug'],
+        'severity_labels' => [
+            'critical' => 'priority: critical',
+        ],
+    ]);
+
+    $user = User::factory()->create();
+    $test = Testerra::createTest('Test', 'Instructions');
+    $assignment = Testerra::assignTest($user, $test);
+
+    Testerra::reportBug($assignment, 'Critical bug', 'Description', 'critical');
+
+    Http::assertSent(function ($request) {
+        $labels = $request['labels'] ?? [];
+
+        return in_array('bug', $labels) && in_array('priority: critical', $labels);
+    });
+});
