@@ -100,6 +100,23 @@ return [
                     'low' => 'Low',
                 ],
             ],
+
+            'github' => [
+                'token' => env('TESTERRA_GITHUB_TOKEN'),
+                'owner' => env('TESTERRA_GITHUB_OWNER'),
+                'repo' => env('TESTERRA_GITHUB_REPO'),
+
+                // Default labels applied to all issues
+                'labels' => ['bug'],
+
+                // Map Testerra severity to GitHub labels
+                'severity_labels' => [
+                    'critical' => 'priority: critical',
+                    'high' => 'priority: high',
+                    'medium' => 'priority: medium',
+                    'low' => 'priority: low',
+                ],
+            ],
         ],
     ],
 ];

@@ -12,6 +12,7 @@ final class IssueTrackerManager
     /** @var array<string, class-string<IssueTrackerInterface>> */
     private array $drivers = [
         'jira' => JiraIssueTracker::class,
+        'github' => GitHubIssueTracker::class,
     ];
 
     /** @param array<string, mixed> $config */
