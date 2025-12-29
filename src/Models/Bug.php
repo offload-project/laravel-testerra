@@ -16,6 +16,10 @@ use OffloadProject\Testerra\Enums\BugSeverity;
  * @property string $title
  * @property string|null $description
  * @property BugSeverity $severity
+ * @property string|null $integration_type
+ * @property string|null $external_id
+ * @property string|null $external_key
+ * @property string|null $external_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
@@ -26,6 +30,10 @@ final class Bug extends Model
         'title',
         'description',
         'severity',
+        'integration_type',
+        'external_id',
+        'external_key',
+        'external_url',
     ];
 
     protected $casts = [
@@ -86,5 +94,15 @@ final class Bug extends Model
     public function isCritical(): bool
     {
         return $this->severity === BugSeverity::Critical;
+    }
+
+    public function hasExternalIssue(): bool
+    {
+        return $this->external_id !== null;
+    }
+
+    public function getExternalUrl(): ?string
+    {
+        return $this->external_url;
     }
 }

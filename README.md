@@ -15,6 +15,7 @@ A Laravel package for managing beta testing programs with test assignments, bug 
   by [laravel-invite-only](https://github.com/offload-project/laravel-invite-only))
 - **Test Assignments**: Assign tests to users individually or by group
 - **Bug Reporting**: Track bugs with severity levels and screenshot attachments
+- **Issue Tracker Integration**: Automatically create Jira issues when bugs are reported
 - **Waitlist Integration**: Optional integration
   with [laravel-waitlist](https://github.com/offload-project/laravel-waitlist)
 - **Event-Driven**: Events fired for key actions (invitations, assignments, completions, bug reports)
@@ -210,6 +211,76 @@ The package dispatches the following events:
 - `TestAssigned` - When a test is assigned to a user
 - `TestCompleted` - When a test assignment is marked complete
 - `BugReported` - When a bug is reported
+
+## Issue Tracker Integration
+
+Automatically create issues in external trackers (like Jira) when bugs are reported.
+
+### Configuration
+
+Add these environment variables:
+
+```env
+TESTERRA_ISSUE_TRACKER_ENABLED=true
+TESTERRA_JIRA_HOST=https://your-domain.atlassian.net
+TESTERRA_JIRA_EMAIL=your-email@example.com
+TESTERRA_JIRA_API_TOKEN=your-api-token
+TESTERRA_JIRA_PROJECT_KEY=PROJ
+TESTERRA_JIRA_ISSUE_TYPE=Bug
+```
+
+For async issue creation (recommended for production):
+
+```env
+TESTERRA_ISSUE_TRACKER_QUEUE=true
+TESTERRA_ISSUE_TRACKER_QUEUE_NAME=testerra
+```
+
+### Priority Mapping
+
+Bug severity is mapped to Jira priority. Customize in `config/testerra.php`:
+
+```php
+'issue_tracker' => [
+    'providers' => [
+        'jira' => [
+            'priority_mapping' => [
+                'critical' => 'Highest',
+                'high' => 'High',
+                'medium' => 'Medium',
+                'low' => 'Low',
+            ],
+        ],
+    ],
+],
+```
+
+### Checking External Issue Status
+
+```php
+$bug = Testerra::reportBug($assignment, 'Button broken');
+
+// Check if synced to external tracker
+if ($bug->hasExternalIssue()) {
+    $url = $bug->getExternalUrl(); // https://your-domain.atlassian.net/browse/PROJ-123
+    $key = $bug->external_key;      // PROJ-123
+}
+```
+
+### Adding Custom Providers
+
+Implement the `IssueTrackerInterface`:
+
+```php
+use OffloadProject\Testerra\Contracts\IssueTrackerInterface;
+
+class GitHubIssueTracker implements IssueTrackerInterface
+{
+    public function createIssue(Bug $bug): ExternalIssue { /* ... */ }
+    public function getIssue(string $externalId): ?ExternalIssue { /* ... */ }
+    public function isConfigured(): bool { /* ... */ }
+}
+```
 
 ## Waitlist Integration
 
