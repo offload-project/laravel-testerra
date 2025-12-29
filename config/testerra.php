@@ -65,4 +65,41 @@ return [
     'invitations' => [
         // Additional testerra-specific invitation settings can be added here
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Issue Tracker Integration
+    |--------------------------------------------------------------------------
+    |
+    | Configure external issue tracker integration for automatic bug syncing.
+    | When enabled, bugs reported through Testerra will automatically create
+    | issues in your configured issue tracker.
+    |
+    */
+    'issue_tracker' => [
+        'enabled' => env('TESTERRA_ISSUE_TRACKER_ENABLED', false),
+        'default' => env('TESTERRA_ISSUE_TRACKER_DRIVER', 'jira'),
+
+        // Set to true to create issues asynchronously via queue
+        'queue' => env('TESTERRA_ISSUE_TRACKER_QUEUE', false),
+        'queue_name' => env('TESTERRA_ISSUE_TRACKER_QUEUE_NAME'),
+
+        'providers' => [
+            'jira' => [
+                'host' => env('TESTERRA_JIRA_HOST'),
+                'email' => env('TESTERRA_JIRA_EMAIL'),
+                'api_token' => env('TESTERRA_JIRA_API_TOKEN'),
+                'project_key' => env('TESTERRA_JIRA_PROJECT_KEY'),
+                'issue_type' => env('TESTERRA_JIRA_ISSUE_TYPE', 'Bug'),
+
+                // Map Testerra severity to Jira priority names
+                'priority_mapping' => [
+                    'critical' => 'Highest',
+                    'high' => 'High',
+                    'medium' => 'Medium',
+                    'low' => 'Low',
+                ],
+            ],
+        ],
+    ],
 ];
